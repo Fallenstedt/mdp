@@ -1,6 +1,6 @@
-# Example Markdown File
+# Markdown Preview
 
-This is an example Markdown file to test the preview tool
+Converts markdown to HTML, and then opens it in a browser. 
 
 ## Running locally
 
