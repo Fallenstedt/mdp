@@ -30,15 +30,15 @@ const (
 )
 
 type content struct {
-  Title string
-  Body template.HTML
+	Title string
+	Body  template.HTML
 }
 
 func main() {
 	// Parse flags
 	filename := flag.String("file", "", "Markdown file to preview")
 	skipPreview := flag.Bool("s", false, "Skip auto-preview")
-  tFname := flag.String("t", "", "Alternate template name")
+	tFname := flag.String("t", "", "Alternate template name")
 	flag.Parse()
 
 	if *filename == "" {
@@ -60,9 +60,9 @@ func run(filename string, tFname string, out io.Writer, skipPreview bool) error 
 	}
 
 	htmlData, err := parseContent(input, tFname)
-  if err != nil {
-    return err
-  }
+	if err != nil {
+		return err
+	}
 
 	temp, err := os.CreateTemp(".", "mdp*.html")
 	if err != nil {
@@ -91,30 +91,30 @@ func run(filename string, tFname string, out io.Writer, skipPreview bool) error 
 func parseContent(input []byte, tFname string) ([]byte, error) {
 	output := blackfriday.Run(input)
 	body := bluemonday.UGCPolicy().SanitizeBytes(output)
-  
-  t, err := template.New("mdp").Parse(defaultTemplate)
-  if err != nil {
-    return nil, err
-  }
 
-  if tFname != "" {
-    t, err = template.ParseFiles(tFname)
-    if err != nil {
-      return nil, err
-    }
-  }
+	t, err := template.New("mdp").Parse(defaultTemplate)
+	if err != nil {
+		return nil, err
+	}
 
-  c := content{
-    Title: "Markdown Preview Tool",
-    Body: template.HTML(body),
-  }
+	if tFname != "" {
+		t, err = template.ParseFiles(tFname)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	c := content{
+		Title: "Markdown Preview Tool",
+		Body:  template.HTML(body),
+	}
 
 	var buffer bytes.Buffer
 
 	// Execute the template with the content type
-  if err := t.Execute(&buffer, c); err != nil {
-    return nil, err
-  }
+	if err := t.Execute(&buffer, c); err != nil {
+		return nil, err
+	}
 
 	return buffer.Bytes(), nil
 }
